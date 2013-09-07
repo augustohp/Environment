@@ -1,0 +1,14 @@
+{
+    "require": {
+        "php": ">=5.4",
+        "respect/validation": "0.4.*"
+    },
+    "require-dev": {
+        "behat/behat": "@stable"
+    },
+    "autoload": {
+        "psr-0": {
+            "Environment": "src/"
+        }
+    }
+}
