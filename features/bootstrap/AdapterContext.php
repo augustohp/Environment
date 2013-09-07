@@ -11,6 +11,7 @@ class AdapterContext extends BehatContext
 {
     private $adapterReflections = array();
     private $adapterConstructorParams = array();
+    private $allowOverwrite = array();
     private $adapters = array();
     private $useAdapterAlias;
     private $result;
@@ -34,30 +35,60 @@ class AdapterContext extends BehatContext
     private function getAdapter($adapterAlias=null)
     {
         $adapterAlias = $this->getAdapterAlias();
-        // Build missing adapter with previously given information
-        if (false === isset($this->adapters[$adapterAlias])) {
-            $adapterReflection = $this->adapterReflections[$adapterAlias];
-            $providedParamters = $this->adapterConstructorParams[$adapterAlias] ?: array();
-            $newInstanceParams = array();
-            $constructorReflection = $adapterReflection->getMethod('__construct');
-            $constructorParams = $constructorReflection->getParameters();
-            // Get the right order of arguments for the constructor
-            foreach ($constructorParams as $reflectionParameter) {
-                $paramName = $reflectionParameter->getName();
-                if (isset($providedParamters[$paramName])) {
-                    $newInstanceParams[] = $providedParamters[$paramName];
-                    continue;
-                }
+        if (isset($this->allowOverwrite[$adapterAlias])) {
+            $allowOverwrite = $this->allowOverwrite[$adapterAlias];
+        } else {
+            $allowOverwrite = Environment\Adapter\Decorator::NO_OVERWRITE;
+        }
 
-                if ($reflectionParameter->isOptional()) {
-                    $newInstanceParams[] = $reflectionParameter->getDefaultValue();
-                }
-            }
-            // Create the instance
-            $this->adapters[$adapterAlias] = $adapterReflection->newInstanceArgs($newInstanceParams);
+        if (false === isset($this->adapters[$adapterAlias])) {
+            
+            $rawAdapter = $this->createAdapter($adapterAlias);
+            $decoratededAdapter = new Environment\Adapter\Decorator($rawAdapter, $allowOverwrite);
+            $this->adapters[$adapterAlias] = $decoratededAdapter;
         }
 
         return $this->adapters[$adapterAlias];
+    }
+
+    private function createAdapter($adapterAlias)
+    {
+        if (false === isset($this->adapterReflections[$adapterAlias])) {
+            $exceptionMessage = sprintf('Adapter alias "%s" was not declared.', $adapterAlias);
+            throw new UnexpectedValueException($exceptionMessage);
+        }
+
+        $adapterReflection = $this->adapterReflections[$adapterAlias];
+        $providedParamters = $this->adapterConstructorParams[$adapterAlias] ?: array();
+        $newInstanceParams = array();
+        if (false === $adapterReflection->hasMethod('__construct')) {
+            return $adapterReflection->newInstance();
+        }
+
+        $constructorReflection = $adapterReflection->getMethod('__construct');
+        $constructorParams = $constructorReflection->getParameters();
+        // Get the right order of arguments for the constructor
+        foreach ($constructorParams as $reflectionParameter) {
+            $paramName = $reflectionParameter->getName();
+            if (isset($providedParamters[$paramName])) {
+                $newInstanceParams[] = $providedParamters[$paramName];
+                continue;
+            }
+
+            if ($reflectionParameter->isOptional()) {
+                $newInstanceParams[] = $reflectionParameter->getDefaultValue();
+            }
+        }
+        // Create the instance
+        return $adapterReflection->newInstanceArgs($newInstanceParams);
+    }
+
+    /**
+     * @Given /^I have a php environment variable named "([^"]*)" with "([^"]*)"$/
+     */
+    public function iHaveAPhpEnvironmentVariableNamedWith($keyName, $value)
+    {
+        putenv("${keyName}=${value}");
     }
 
     /**
@@ -113,8 +144,7 @@ class AdapterContext extends BehatContext
     public function iAsAConstructorParamIProvideBoolean($paramName, $booleanValue)
     {
         $adapterAlias = $this->getAdapterAlias();
-        $value = (boolean) $booleanValue;
-        $this->defineConstructorParamsForAdapter($adapterAlias, $paramName, $value);
+        $this->allowOverwrite[$adapterAlias] = (boolean) $booleanValue;
     }
 
     /**

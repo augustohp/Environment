@@ -6,7 +6,7 @@ variables from as many different sources as possible.
 ```php
 <?php
 // Using PHP's own get_env() and put_env() functions.
-$phpAdapter = new Environment\Adapter\Php;
+$phpAdapter = new Environment\Adapter\PHP;
 // Using Memcache.
 $memcacheAdapter = new Environment\Adapter\Memcache('127.0.0.1:11211');
 // Using an array as stub.
