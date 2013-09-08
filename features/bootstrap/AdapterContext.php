@@ -11,7 +11,6 @@ class AdapterContext extends BehatContext
 {
     private $adapterReflections = array();
     private $adapterConstructorParams = array();
-    private $allowOverwrite = array();
     private $adapters = array();
     private $useAdapterAlias;
     private $result;
@@ -35,16 +34,8 @@ class AdapterContext extends BehatContext
     private function getAdapter($adapterAlias=null)
     {
         $adapterAlias = $this->getAdapterAlias();
-        if (isset($this->allowOverwrite[$adapterAlias])) {
-            $allowOverwrite = $this->allowOverwrite[$adapterAlias];
-        } else {
-            $allowOverwrite = Environment\Adapter\Decorator\ControlOverwrite::PREVENT;
-        }
-
         if (false === isset($this->adapters[$adapterAlias])) {
-            $rawAdapter = $this->createAdapter($adapterAlias);
-            $decoratededAdapter = new Environment\Adapter\Decorator\ControlOverwrite($rawAdapter, $allowOverwrite);
-            $this->adapters[$adapterAlias] = $decoratededAdapter;
+            $this->adapters[$adapterAlias] = $this->createAdapter($adapterAlias);
         }
 
         return $this->adapters[$adapterAlias];
@@ -152,15 +143,6 @@ class AdapterContext extends BehatContext
         $adapterAlias = $this->getAdapterAlias();
         $values = parse_ini_string((string) $iniSyntaxString);
         $this->defineConstructorParamsForAdapter($adapterAlias, $paramName, $values);
-    }
-
-    /**
-     * @Given /^I as a constructor param "([^"]*)" I provide boolean "([^"]*)"$/
-     */
-    public function iAsAConstructorParamIProvideBoolean($paramName, $booleanValue)
-    {
-        $adapterAlias = $this->getAdapterAlias();
-        $this->allowOverwrite[$adapterAlias] = (boolean) $booleanValue;
     }
 
     /**
