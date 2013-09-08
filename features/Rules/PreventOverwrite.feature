@@ -2,7 +2,7 @@
 Feature: Ensure a value is never ovewriten.
     In order to guarantee that a value is never overwriten by an adapter
     As a I developer
-    I must be able to decorate my adapter with this behavior
+    I must be able to compose my adapter with this behavior
 
 Background:
     Given I have a "Stub" adapter named "stub"
@@ -14,7 +14,7 @@ Background:
 
 Scenario: Write to an existing value on a decorated adapter
     Given I get my "stub" adapter
-    And I decorate it with "PreventOverwrite"
+    And I add rule "PreventOverwrite"
     When I write "boo" on "ENVIRONMENT_NAME"
     Then I should get a "Environment\Exception\WriteNotAllowed" exception instance
     And I should get "'ENVIRONMENT_NAME' is already set, overwrite is not allowed." as exception message

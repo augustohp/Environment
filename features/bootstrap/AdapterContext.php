@@ -74,11 +74,11 @@ class AdapterContext extends BehatContext
     }
 
     /**
-     * @Given /^I decorate it with "([^"]*)"$/
+     * @Given /^I add rule "([^"]*)"$/
      */
-    public function iDecorateItWith($decoratorName)
+    public function iComposeItWith($decoratorName)
     {
-        $namespace = 'Environment\\Adapter\\Decorator\\%s';
+        $namespace = 'Environment\\Adapter\\Rule\\%s';
         $fullyQualifiedClassName = sprintf($namespace, $decoratorName);
         if (false === class_exists($fullyQualifiedClassName)) {
             $exceptionMessage = sprintf('Decorator "%s" not found.', $fullyQualifiedClassName);

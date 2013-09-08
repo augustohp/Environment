@@ -1,6 +1,6 @@
 <?php
 
-namespace Environment\Adapter\Decorator;
+namespace Environment\Adapter\Rule;
 
 use Environment\Adapter\Behavior;
 use Environment\Exception;

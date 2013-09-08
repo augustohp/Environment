@@ -2,7 +2,7 @@
 Feature: Ensure an adapter to be read-only.
     In order to only read from the environment
     As a I developer
-    I must be able to decorate my adapter with this behavior
+    I must be able to compose my adapter with this behavior
 
 Background:
     Given I have a "Stub" adapter named "stub"
@@ -14,7 +14,7 @@ Background:
 
 Scenario: Unable to write on a read-only decorated adapter
     Given I get my "stub" adapter
-    And I decorate it with "ReadOnly"
+    And I add rule "ReadOnly"
     When I write "boo" on "ENVIRONMENT_NAME"
     Then I should get a "Environment\Exception\ReadOnly" exception instance
     And I should get "'ENVIRONMENT_NAME' cannot be set while on read-only mode." as exception message

@@ -4,7 +4,9 @@
         "respect/validation": "0.4.*"
     },
     "require-dev": {
-        "behat/behat": "@stable"
+        "behat/behat": "@stable",
+        "instaclick/php-code-sniffer": "@stable",
+        "phpmd/phpmd": "@stable"
     },
     "autoload": {
         "psr-0": {
