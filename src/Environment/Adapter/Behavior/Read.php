@@ -2,7 +2,7 @@
 
 namespace Environment\Adapter\Behavior;
 
-interface Read
+interface Read extends Adapter
 {
     public function get($name);
 }

@@ -1,0 +1,9 @@
+wip:
+    formatter:
+        name: progress
+        parameters:
+            decorated: true
+            verbose: true
+            time: true
+    filters:
+        tags: "@wip"

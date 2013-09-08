@@ -42,7 +42,6 @@ class AdapterContext extends BehatContext
         }
 
         if (false === isset($this->adapters[$adapterAlias])) {
-            
             $rawAdapter = $this->createAdapter($adapterAlias);
             $decoratededAdapter = new Environment\Adapter\Decorator\ControlOverwrite($rawAdapter, $allowOverwrite);
             $this->adapters[$adapterAlias] = $decoratededAdapter;
@@ -81,6 +80,23 @@ class AdapterContext extends BehatContext
         }
         // Create the instance
         return $adapterReflection->newInstanceArgs($newInstanceParams);
+    }
+
+    /**
+     * @Given /^I decorate it with "([^"]*)"$/
+     */
+    public function iDecorateItWith($decoratorName)
+    {
+        $namespace = 'Environment\\Adapter\\Decorator\\%s';
+        $fullyQualifiedClassName = sprintf($namespace, $decoratorName);
+        if (false === class_exists($fullyQualifiedClassName)) {
+            $exceptionMessage = sprintf('Decorator "%s" not found.', $fullyQualifiedClassName);
+            throw new UnexpectedValueException($exceptionMessage);
+        }
+
+        $adapterAlias = $this->getAdapterAlias();
+        $adapter = $this->getAdapter();
+        $this->adapters[$adapterAlias] = new $fullyQualifiedClassName($adapter);
     }
 
     /**

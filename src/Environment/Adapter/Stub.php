@@ -4,8 +4,7 @@ namespace Environment\Adapter;
 
 class Stub implements Behavior\Write,
                       Behavior\Read,
-                      Behavior\Available,
-                      Behavior\Adapter
+                      Behavior\Available
 {
     private $environmentData;
 

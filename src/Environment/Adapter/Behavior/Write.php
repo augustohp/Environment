@@ -2,7 +2,7 @@
 
 namespace Environment\Adapter\Behavior;
 
-interface Write
+interface Write extends Adapter
 {
     public function set($name, $value);
 }

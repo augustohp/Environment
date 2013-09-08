@@ -19,16 +19,6 @@ class ControlOverwrite implements Behavior\Write,
         $this->optionAllowOverwrite = (boolean) $allowOverwrite;
     }
 
-    private function hasValue($name)
-    {
-        try {
-            $this->get($name);
-            return true;
-        } catch (Exception\KeyNotFound $e) {
-            return false;
-        }
-    }
-
     public function get($name)
     {
         if (!$this->decoratedAdapter instanceof Behavior\Read) {
@@ -38,10 +28,6 @@ class ControlOverwrite implements Behavior\Write,
         }
 
         $value = $this->decoratedAdapter->get($name);
-        if (empty($value)) {
-            throw new Exception\KeyNotFound($name);
-        }
-
         return $value;
     }
 
@@ -53,7 +39,12 @@ class ControlOverwrite implements Behavior\Write,
             throw new \InvalidArgumentException($exceptionMessage);
         }
 
-        if ($this->hasValue($name) && false === $this->optionAllowOverwrite) {
+        $adapter = $this->decoratedAdapter;
+        if (!$adapter instanceof NoEmptyReturn) {
+            $adapter = new NoEmptyReturn($adapter);
+        }
+
+        if ($adapter->hasValue($name) && false === $this->optionAllowOverwrite) {
             $exceptionMessage = sprintf('\'%s\' is already set, and overwrite is not allowed.', $name);
             throw new Exception\WriteNotAllowed($exceptionMessage);
         }

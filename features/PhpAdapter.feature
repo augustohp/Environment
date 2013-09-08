@@ -19,13 +19,6 @@ Scenario: Read an existing value
     When I read "name" from it
     Then I should get "live"
 
-Scenario: Read a value that does not exist
-    Given I get my "php" adapter
-    When I read "something" from it
-    Then I should get a "Environment\Exception\KeyNotFound" exception instance
-    And I should get "'something' key was not found." as exception message
-    And I should get "Environment\Error::KEY_NOT_FOUND" as exception code
-
 Scenario: Write a new value
     Given I get my "php" adapter
     And I write "debug" on "logLevel"

@@ -4,8 +4,7 @@ namespace Environment\Adapter;
 
 class PHP implements Behavior\Write,
                      Behavior\Read,
-                     Behavior\Available,
-                     Behavior\Adapter
+                     Behavior\Available
 {
     public static function isAvailable()
     {
