@@ -38,13 +38,13 @@ class AdapterContext extends BehatContext
         if (isset($this->allowOverwrite[$adapterAlias])) {
             $allowOverwrite = $this->allowOverwrite[$adapterAlias];
         } else {
-            $allowOverwrite = Environment\Adapter\Decorator::NO_OVERWRITE;
+            $allowOverwrite = Environment\Adapter\Decorator\ControlOverwrite::PREVENT;
         }
 
         if (false === isset($this->adapters[$adapterAlias])) {
             
             $rawAdapter = $this->createAdapter($adapterAlias);
-            $decoratededAdapter = new Environment\Adapter\Decorator($rawAdapter, $allowOverwrite);
+            $decoratededAdapter = new Environment\Adapter\Decorator\ControlOverwrite($rawAdapter, $allowOverwrite);
             $this->adapters[$adapterAlias] = $decoratededAdapter;
         }
 

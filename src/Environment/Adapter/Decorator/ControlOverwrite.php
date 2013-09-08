@@ -1,17 +1,18 @@
 <?php
 
-namespace Environment\Adapter;
+namespace Environment\Adapter\Decorator;
 use Environment\WriterInterface;
 use Environment\ReaderInterface;
 use Environment\Exception;
 
-class Decorator implements WriterInterface, ReaderInterface
+class ControlOverwrite implements WriterInterface, ReaderInterface
 {
-    const NO_OVERWRITE = false;
+    const PREVENT = false;
+    const ALLOW = true;
     private $decoratedAdapter;
     private $optionAllowOverwrite;
 
-    public function __construct($adapter, $allowOverwrite=self::NO_OVERWRITE)
+    public function __construct($adapter, $allowOverwrite=self::PREVENT)
     {
         if (!$adapter instanceof WriterInterface && !$adapter instanceof ReaderInterface) {
             $baseExceptionMessage = 'Class \'%s\' does not implement any adapter interface.';
