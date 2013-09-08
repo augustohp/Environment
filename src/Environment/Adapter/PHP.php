@@ -18,6 +18,6 @@ class PHP implements Behavior\Write,
 
     public function set($name, $value)
     {
-        putenv("${name}=${value}");
+        return putenv("${name}=${value}");
     }
 }

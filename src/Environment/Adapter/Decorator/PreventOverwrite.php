@@ -21,10 +21,11 @@ class PreventOverwrite implements Behavior\Write
             $adapter = new NoEmptyReturn($adapter);
         }
 
-        if ($adapter->hasValue($name)) {
+        if (($adapter instanceof Behavior\KeyExists && $adapter->hasKey($name))
+           || ($adapter->hasValue($name))) {
             throw new Exception\WriteNotAllowed($name);
         }
 
-        $this->decoratedAdapter->set($name, $value);
+        $adapter->set($name, $value);
     }
 }

@@ -250,4 +250,16 @@ class AdapterContext extends BehatContext
         $exceptionMessage = sprintf('Expected exception code "%s" but received "%s"', $expectedCode, $givenCode);
         throw new UnexpectedValueException($exceptionMessage); 
     }
+
+    /**
+     * @Given /^I remove an APC cache variable named "([^"]*)"$/
+     */
+    public function iRemoveAnApcCacheVariableNamed($varName)
+    {
+        if (false === extension_loaded('apc')) {
+            throw new UnexpectedValueException('APC not available.');
+        }
+
+        apc_delete($varName);
+    }
 }
