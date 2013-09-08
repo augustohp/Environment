@@ -1,25 +1,20 @@
 <?php
 
 namespace Environment\Adapter\Decorator;
-use Environment\WriterInterface;
-use Environment\ReaderInterface;
+
+use Environment\Adapter\Behavior;
 use Environment\Exception;
 
-class ControlOverwrite implements WriterInterface, ReaderInterface
+class ControlOverwrite implements Behavior\Write,
+                                  Behavior\Read
 {
     const PREVENT = false;
     const ALLOW = true;
     private $decoratedAdapter;
     private $optionAllowOverwrite;
 
-    public function __construct($adapter, $allowOverwrite=self::PREVENT)
+    public function __construct(Behavior\Adapter $adapter, $allowOverwrite=self::PREVENT)
     {
-        if (!$adapter instanceof WriterInterface && !$adapter instanceof ReaderInterface) {
-            $baseExceptionMessage = 'Class \'%s\' does not implement any adapter interface.';
-            $exceptionMessage = sprintf($baseExceptionMessage, get_class($adapter));
-            throw new \InvalidArgumentException($exceptionMessage);
-        }
-
         $this->decoratedAdapter = $adapter;
         $this->optionAllowOverwrite = (boolean) $allowOverwrite;
     }
@@ -36,6 +31,12 @@ class ControlOverwrite implements WriterInterface, ReaderInterface
 
     public function get($name)
     {
+        if (!$this->decoratedAdapter instanceof Behavior\Read) {
+            $baseExceptionMessage = 'Class \'%s\' does not have READ behavior.';
+            $exceptionMessage = sprintf($baseExceptionMessage, get_class($this->decoratedAdapter));
+            throw new \InvalidArgumentException($exceptionMessage);
+        }
+
         $value = $this->decoratedAdapter->get($name);
         if (empty($value)) {
             throw new Exception\KeyNotFound($name);
@@ -46,6 +47,12 @@ class ControlOverwrite implements WriterInterface, ReaderInterface
 
     public function set($name, $value)
     {
+        if (!$this->decoratedAdapter instanceof Behavior\Write) {
+            $baseExceptionMessage = 'Class \'%s\' does not have WRITE behavior.';
+            $exceptionMessage = sprintf($baseExceptionMessage, get_class($this->decoratedAdapter));
+            throw new \InvalidArgumentException($exceptionMessage);
+        }
+
         if ($this->hasValue($name) && false === $this->optionAllowOverwrite) {
             $exceptionMessage = sprintf('\'%s\' is already set, and overwrite is not allowed.', $name);
             throw new Exception\WriteNotAllowed($exceptionMessage);

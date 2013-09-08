@@ -2,11 +2,16 @@
 
 namespace Environment\Adapter;
 
-use Environment\WriterInterface;
-use Environment\ReaderInterface;
-
-class PHP implements WriterInterface, ReaderInterface
+class PHP implements Behavior\Write,
+                     Behavior\Read,
+                     Behavior\Available,
+                     Behavior\Adapter
 {
+    public static function isAvailable()
+    {
+        return true;
+    }
+
     public function get($name)
     {
         return getenv($name);

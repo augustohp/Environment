@@ -2,16 +2,21 @@
 
 namespace Environment\Adapter;
 
-use Environment\WriterInterface;
-use Environment\ReaderInterface;
-
-class Stub implements WriterInterface, ReaderInterface
+class Stub implements Behavior\Write,
+                      Behavior\Read,
+                      Behavior\Available,
+                      Behavior\Adapter
 {
     private $environmentData;
 
     public function __construct(array $environmentData=array())
     {
         $this->environmentData = $environmentData;
+    }
+
+    public static function isAvailable()
+    {
+        return true;
     }
 
     public function get($name)
