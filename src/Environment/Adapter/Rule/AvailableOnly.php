@@ -2,6 +2,7 @@
 
 namespace Environment\Adapter\Rule;
 
+use Environment\Adapter;
 use Environment\Adapter\Behavior;
 use Environment\Exception;
 use Environment\Error;
@@ -16,6 +17,10 @@ class AvailableOnly implements Behavior\Available,
 
     public function __construct(Behavior\Available $adapter)
     {
+        if (!$adapter instanceof Adapter\Mediator) {
+            $adapter = new Adapter\Mediator($adapter);
+        }
+
         $this->decoratedAdapter = $adapter;
     }
 
@@ -31,22 +36,6 @@ class AvailableOnly implements Behavior\Available,
         throw new Exception\Availiability($message, $code);
     }
 
-    private function checkBehaviorSupport($baseInterfaceName)
-    {
-        $adapter = $this->decoratedAdapter;
-        $fullInterfaceName = sprintf('Environment\\Adapter\\Behavior\\%s', $baseInterfaceName);
-        if ($adapter instanceof $fullInterfaceName) {
-            return true;
-        }
-
-        $classNameParts = explode('\\', $fullInterfaceName);
-        $operation = array_pop($classNameParts);
-        $operation = strtolower($operation);
-        $templateExceptionMessage = '\'%s\' has no %s support.';
-        $message = sprintf($templateExceptionMessage, get_class($adapter), $operation);
-        throw new Exception\Availiability($message, Error::COMPONENT_CONFIGURATION);
-    }
-
     public function isAvailable()
     {
         return $this->decoratedAdapter->isAvailable();
@@ -54,28 +43,24 @@ class AvailableOnly implements Behavior\Available,
 
     public function get($name)
     {
-        $this->checkBehaviorSupport('Read');
         $this->checkAdapterIsAvailable();
         return $this->decoratedAdapter->get($name);
     }
 
     public function set($name, $value)
     {
-        $this->checkBehaviorSupport('Write');
         $this->checkAdapterIsAvailable();
         return $this->decoratedAdapter->set($name, $value);
     }
 
     public function delete($name)
     {
-        $this->checkBehaviorSupport('Delete');
         $this->checkAdapterIsAvailable();
         return $this->decoratedAdapter->delete($name);
     }
 
     public function hasKey($name)
     {
-        $this->checkBehaviorSupport('KeyExists');
         $this->checkAdapterIsAvailable();
         return $this->decoratedAdapter->hasKey($name);
     }

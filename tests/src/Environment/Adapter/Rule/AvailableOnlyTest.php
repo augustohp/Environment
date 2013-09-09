@@ -65,53 +65,6 @@ class AvailableOnlyTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException Environment\Exception\Availiability
-     * @expectedExceptionMessage has no read support.
-     */
-    public function try_not_suported_read_on_adapter()
-    {
-        $adapter = new AvailableOnly(new BadAdapter());
-        $adapter->get('something');
-    }
-
-    /**
-     * @test
-     * @depends try_not_suported_read_on_adapter
-     * @expectedException Environment\Exception\Availiability
-     * @expectedExceptionMessage has no write support.
-     */
-    public function try_not_supported_write_on_adapter()
-    {
-        $adapter = new AvailableOnly(new BadAdapter());
-        $adapter->set('something', 'somewhere');
-    }
-
-    /**
-     * @test
-     * @depends try_not_suported_read_on_adapter
-     * @expectedException Environment\Exception\Availiability
-     * @expectedExceptionMessage has no delete support.
-     */
-    public function try_not_supported_delete_on_adapter()
-    {
-        $adapter = new AvailableOnly(new BadAdapter());
-        $adapter->delete('something');
-    }
-
-    /**
-     * @test
-     * @depends try_not_suported_read_on_adapter
-     * @expectedException Environment\Exception\Availiability
-     * @expectedExceptionMessage has no keyexists support.
-     */
-    public function try_not_supported_hasKey_on_adapter()
-    {
-        $adapter = new AvailableOnly(new BadAdapter());
-        $adapter->hasKey('something');
-    }
-
-    /**
-     * @test
-     * @expectedException Environment\Exception\Availiability
      * @expectedExceptionMessage is not availiable to use.
      */
     public function try_read_on_unavailable_adapter()
@@ -151,13 +104,5 @@ class AvailableOnlyTest extends \PHPUnit_Framework_TestCase
     {
         $adapter = new AvailableOnly(new Adapter\Unavailable());
         $adapter->hasKey('something');
-    }
-}
-
-class BadAdapter implements Behavior\Adapter, Behavior\Available
-{
-    public function isAvailable()
-    {
-        return false;
     }
 }

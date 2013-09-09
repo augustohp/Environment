@@ -2,6 +2,7 @@
 
 namespace Environment\Adapter\Rule;
 
+use Environment\Adapter;
 use Environment\Adapter\Behavior;
 use Environment\Exception;
 
@@ -11,6 +12,10 @@ class NoEmptyReturn implements Behavior\Read
 
     public function __construct(Behavior\Read $adapter)
     {
+        if (!$adapter instanceof Adapter\Mediator) {
+            $adapter = new Adapter\Mediator($adapter);
+        }
+
         $this->decoratedAdapter = $adapter;
     }
 
