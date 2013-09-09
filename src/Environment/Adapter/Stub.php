@@ -13,7 +13,7 @@ class Stub implements Behavior\Write,
         $this->environmentData = $environmentData;
     }
 
-    public static function isAvailable()
+    public function isAvailable()
     {
         return true;
     }

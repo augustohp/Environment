@@ -8,7 +8,7 @@ class Apc implements Behavior\Write,
                      Behavior\KeyExists,
                      Behavior\Delete
 {
-    public static function isAvailable()
+    public function isAvailable()
     {
         return extension_loaded('apc');
     }

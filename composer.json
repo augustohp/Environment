@@ -5,6 +5,7 @@
     },
     "require-dev": {
         "behat/behat": "@stable",
+        "phpunit/phpunit": "@stable",
         "instaclick/php-code-sniffer": "@stable",
         "phpmd/phpmd": "@stable"
     },

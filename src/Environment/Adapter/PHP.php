@@ -6,7 +6,7 @@ class PHP implements Behavior\Write,
                      Behavior\Read,
                      Behavior\Available
 {
-    public static function isAvailable()
+    public function isAvailable()
     {
         return true;
     }
