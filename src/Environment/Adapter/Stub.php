@@ -4,7 +4,9 @@ namespace Environment\Adapter;
 
 class Stub implements Behavior\Write,
                       Behavior\Read,
-                      Behavior\Available
+                      Behavior\Available,
+                      Behavior\Delete,
+                      Behavior\KeyExists
 {
     private $environmentData;
 
@@ -20,7 +22,7 @@ class Stub implements Behavior\Write,
 
     public function get($name)
     {
-        if (isset($this->environmentData[$name])) {
+        if ($this->hasKey($name)) {
             return $this->environmentData[$name];
         }
 
@@ -30,5 +32,15 @@ class Stub implements Behavior\Write,
     public function set($name, $value)
     {
         $this->environmentData[$name] = $value;
+    }
+
+    public function hasKey($name)
+    {
+        return isset($this->environmentData[$name]);
+    }
+
+    public function delete($name)
+    {
+        unset($this->environmentData[$name]);
     }
 }
