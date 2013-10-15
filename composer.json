@@ -7,7 +7,8 @@
         "behat/behat": "@stable",
         "phpunit/phpunit": "@stable",
         "instaclick/php-code-sniffer": "@stable",
-        "phpmd/phpmd": "@stable"
+        "phpmd/phpmd": "@stable",
+        "lstrojny/phpunit-function-mocker": "dev-master"
     },
     "autoload": {
         "psr-0": {
