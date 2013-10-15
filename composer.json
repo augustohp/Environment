@@ -1,10 +1,8 @@
 {
     "require": {
-        "php": ">=5.4",
-        "respect/validation": "0.4.*"
+        "php": ">=5.4"
     },
     "require-dev": {
-        "behat/behat": "@stable",
         "phpunit/phpunit": "@stable",
         "instaclick/php-code-sniffer": "@stable",
         "phpmd/phpmd": "@stable",
