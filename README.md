@@ -5,33 +5,28 @@ variables from as many different sources as possible.
 
 ```php
 <?php
-// Using PHP's own get_env() and put_env() functions.
-$phpAdapter = new Environment\Adapter\PHP;
-// Using Memcache.
-$memcacheAdapter = new Environment\Adapter\Memcache('127.0.0.1:11211');
-// Using an array as stub (or default values for all possible configuration).
-$stubAdapter = new Environment\Adapter\Stub(["name"=>live, "readOnly"=>false]);
-// You can make it try to retrieve information from multiple adapters.
-$priorityQueue = [$memcacheAdapter, $phpAdapter, $stubAdapter]
-$environment = new Environment\Reader($priorityQueue);
-switch ($environment->name) {
+$defaultValues = [
+    'ENVIRONMENT_NAME' => 'live',
+    'MAINTENANCE_READ_ONLY' => false,
+    "ENABLE_NEW_FEATURE" => false
+]
+$getEnv = new Environment\Source\GetEnv;
+$default = new Environment\Source\ArrayObject($defaultValues);
+$environment = new Environment\Reader([$getEnv, $default]);
+switch ($environment->ENVIRONMENT_NAME) {
     case 'live':
-        // ...
+        define('LOG_LEVEL', 'NOTICE');
         break;
     case 'developement':
-        // ...
+        define('LOG_LEVEL', 'DEBUG');
         break;
-}
-// Or test for just a given environment variable.
-if ($environment->name->is('live')) {
-    // ...
 }
 
 // Or maybe use the shortcut API
 use Environment\Api as Env;
 
-Env::alwaysReadFrom($priorityQueue);
-if (Env::name->is('live')) {
+Env::alwaysReadFrom([$getEnv, $default]);
+if (Env::ENVIRONMENT_NAME->is('live')) {
     // ...
 }
 ?>
